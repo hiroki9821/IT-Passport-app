@@ -1,202 +1,411 @@
+@charset "utf-8";
+
+/* --- カラースキーム（ダーク/ベージュ含む） --- */
 :root {
-  --choice-bg: #f4f4f4;
-  --choice-hover: #e0e0e0;
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --border-color: #cccccc;
-  --menu-bg: #ffffff;
-  --menu-border: #cccccc;
+  --body-color: #222225;
+  --body-bg: #f4f4f4;
+  --main-bg: #fff;
+  --main-bg-diff: #fbfbfb;
+  --main-bg-sub: #f5f5f5;
+  --link-color: #123dc2;
+  --visited-color: #804a80;
+  --h3-color: hsl(214deg 50% 30%);
+  --h3-bg: hsl(214deg 70% 92%);
+  --dt-color: #125;
+  --color-eee: #eee;
+  --color-ddd: #ddd;
+  --color-ccc: #ccc;
+  --color-666: #666;
+  --color-555: #555;
+  --color-444: #444;
+  --dark-border: rgb(0 0 0 / 10%);
+  --input-bg: #fff;
+  --input-border: rgb(0 0 0 / 30%);
+  --menu-bg: #fff;
+  --menu-border: #ccc;
+  --footer-bg: #f2f4f4;
+  --brand-bg: hsl(214deg 50% 42%);
+  --brand-light-bg: hsl(214deg 50% 48%);
+  --brand-dark-bg: hsl(214deg 50% 38%);
+  --brand-pale-bg: hsl(204deg 40% 92%);
 }
+
 body.dark {
-  --choice-bg: #2a2a2a;
-  --choice-hover: #3a3a3a;
-  --bg-color: #121212;
-  --text-color: #f0f0f0;
-  --border-color: #444444;
-  --menu-bg: #222222;
-  --menu-border: #555555;
+  --body-color: #e6e6e5;
+  --body-bg: #242424;
+  --main-bg: #2b2b2b;
+  --main-bg-diff: #2f2f2f;
+  --main-bg-sub: #353535;
+  --link-color: #3e82da;
+  --h3-color: hsl(214deg 40% 55%);
+  --h3-bg: hsl(214deg 15% 25%);
+  --dt-color: #4c96e2;
+  --color-eee: #393939;
+  --color-ddd: #414141;
+  --color-ccc: #555;
+  --color-666: #bbb;
+  --color-555: #ccc;
+  --color-444: #ddd;
+  --dark-border: rgb(0 0 0 / 30%);
+  --input-bg: #303131;
+  --menu-bg: #222;
+  --menu-border: #555;
+  --footer-bg: #222224;
+  --brand-bg: hsl(214deg 40% 28%);
+  --brand-light-bg: hsl(214deg 40% 38%);
+  --brand-pale-bg: hsl(214deg 12% 22%);
 }
+
+body.dark .breadcrumb {
+  color: #e0e0e0;
+}
+body.dark .breadcrumb span {
+  color: #66aaff;
+}
+body.dark .breadcrumb .divider {
+  color: #888;
+}
+
+body.dark #quiz-category-title,
+body.dark h2 {
+  color: #6db6ff;
+}
+
+body.dark #hamburger-btn {
+  background: none;
+  color: #eee;
+}
+
+body.dark #hamburger-btn:hover,
+body.dark #hamburger-btn:focus {
+  background: #355497;   /* ダーク時はそのまま濃い色 */
+  color: #fff;
+}
+
+/* --- 基本要素リセット＆全体 --- */
+html,
 body {
-  font-size: 18px;
   margin: 0;
-  font-family: sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
-}
-.container {
-  text-align: center;
-  padding: 20px;
-}
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-button {
-  font-size: 17px;
-}
-.category-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin: 20px 0;
-}
-.category-buttons button {
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-}
-#choices-area button {
-  display: block;
-  background-color: var(--choice-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 12px 16px;
-  margin: 10px auto;
-  width: 90%;
-  max-width: 500px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: left;
-  transition: background-color 0.2s ease;
-}
-#choices-area button:hover {
-  background-color: var(--choice-hover);
-}
-#quiz-section button {
-  margin: 10px auto;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  max-width: 100%;
+  padding: 0;
   box-sizing: border-box;
 }
-#hamburger-btn {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 1000;
-  color: var(--text-color);
-}
-#hamburger-menu {
-  position: fixed;
-  top: 50px;
-  right: 10px;
-  background: var(--menu-bg);
-  border: 1px solid var(--menu-border);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  z-index: 999;
-}
-#hamburger-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-#hamburger-menu li {
-  margin: 5px 0;
-}
+
 .hidden {
-  display: none;
+  display: none !important;
 }
-#lang-ja.selected,
-#lang-en.selected,
-#lang-ru.selected {
+
+body {
+  font: 16px/1.75 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, 'メイリオ', Roboto, sans-serif;
+  color: var(--body-color);
+  background: var(--body-bg);
+  letter-spacing: .01em;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  word-break: break-all;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- メインラップ --- */
+.content {
+  background: var(--body-bg);
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 0 40px 0;
+}
+
+/* --- 見出し --- */
+h1 {
+  font-size: 28px;
+  word-break: keep-all;
+  white-space: normal;
+  color: var(--h3-color);
+  margin-bottom: 12px;
   font-weight: bold;
-  text-decoration: underline;
+  text-align: center;
 }
+
+h2 {
+  font-size: 22px;
+  word-break: keep-all;
+  color: var(--brand-bg);
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* --- ラウンドボックス --- */
+.roundBox {
+  background: var(--main-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
+  padding: 24px 12px;
+  margin: 18px 0 24px 0;
+  max-width: 600px;
+  min-width: unset;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- カテゴリボタン類 --- */
+.category-buttons.selectBtn,
+.subcategory-buttons.selectBtn {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin: 28px 0 16px 0;
+}
+
+.category-buttons.selectBtn button,
+.subcategory-buttons.selectBtn button {
+  flex: 1 1 120px;
+  min-width: 120px;
+  max-width: 200px;
+  padding: 14px 0;
+  margin: 0 2px;
+  background: var(--main-bg-sub);
+  border: 1.5px solid var(--brand-bg);
+  color: var(--body-color);
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+}
+
+.category-buttons.selectBtn button:hover,
+.subcategory-buttons.selectBtn button:hover {
+  background: var(--brand-light-bg);
+  color: #fff;
+  border-color: var(--brand-dark-bg);
+}
+
+/* --- 問題選択肢エリア --- */
+#choices-area.selectBtn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 22px 0 20px 0;
+}
+
+#choices-area.selectBtn button {
+  background: var(--main-bg-diff);
+  color: var(--body-color);
+  border: 1.5px solid var(--color-ccc);
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-size: 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+#choices-area.selectBtn button:hover {
+  background: var(--brand-light-bg);
+  color: #fff;
+  border-color: var(--brand-dark-bg);
+}
+
+/* --- クイズエリアのナビ・操作ボタン --- */
 #navigation-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 36px;
 }
+
 #navigation-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
   width: 100%;
   max-width: 500px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
+
 #navigation-buttons button {
-  width: 48%;
-  padding: 10px 20px;
+  flex: 1 1 0;
+  padding: 13px 0;
   font-size: 16px;
-  box-sizing: border-box;
+  background: linear-gradient(var(--brand-light-bg), var(--brand-bg));
+  color: #fff;
+  border: 1.5px solid var(--brand-dark-bg);
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
   cursor: pointer;
-  background-color: #1e4a84;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
+
 #navigation-buttons button:hover {
-  background-color: #2563a6;
+  background: var(--brand-bg);
 }
-#previous-question-btn {
-  display: none;
-  margin: 0;
-}
+
 #back-to-category-btn {
   display: block;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 13px 32px;
   font-size: 16px;
+  background: var(--main-bg-sub);
+  color: var(--body-color);
+  border: 1.5px solid var(--brand-bg);
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
-@media screen and (max-width: 600px) {
-  #navigation-buttons {
-    flex-direction: row;
-  }
-  #navigation-buttons button {
-    width: 48%;
-  }
+
+#back-to-category-btn:hover {
+  background: var(--brand-light-bg);
+  color: #fff;
+  border-color: var(--brand-dark-bg);
 }
-@media screen and (max-width: 480px) {
-  #quiz-section button {
-    font-size: 16px;
-    padding: 12px;
-  }
-}
-@media (min-width: 768px) {
-  body {
-    font-size: 16px;
-  }
-  h1 {
-    font-size: 22px;
-  }
-  h2 {
-    font-size: 18px;
-  }
-  button {
-    font-size: 15px;
-  }
-}
+
+/* --- パンくずリスト --- */
 .breadcrumb {
-  font-size: 14px;
+  font-size: 15px;
   margin-bottom: 10px;
-  color: var(--text-color);
+  color: var(--color-666);
   text-align: left;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
+
 .breadcrumb span {
-  color: var(--text-color);
+  color: var(--brand-dark-bg);
 }
+
 .breadcrumb .divider {
   margin: 0 5px;
   color: #999;
+}
+
+/* --- ハンバーガーメニュー --- */
+#hamburger-btn {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  z-index: 2000;
+  font-size: 28px;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: background .15s;
+}
+#hamburger-btn:hover,
+#hamburger-btn:focus {
+  background: none;
+  color: #fff;
+}
+
+/* スライドメニュー本体 */
+#hamburger-menu {
+  position: fixed;
+  top: 0;
+  right: -260px; /* 初期は画面外 */
+  width: 240px;
+  height: 100%;
+  background: #222;
+  color: #eee;
+  border-left: 6px solid #12469c;
+  z-index: 2200;
+  transition: right 0.3s cubic-bezier(.45, .65, .25, 1);
+  z-index: 2200;
+  box-shadow: none;
+  padding: 0;
+  overflow-y: auto;
+}
+#hamburger-menu.open {
+  right: 0;
+}
+#hamburger-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#hamburger-menu li {
+  border-bottom: 1.5px solid #444;
+}
+#hamburger-menu button,
+#hamburger-menu label {
+  background: none;
+  color: #eee;
+  border: none;
+  text-align: left;
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background .13s;
+  font-weight: bold;
+}
+#hamburger-menu button:hover,
+#hamburger-menu label:hover {
+  background: #355497;
+  color: #fff;
+}
+
+/* オーバーレイ（背景クリックで閉じる用） */
+.menu-open::before {
+  content: '';
+  display: block;
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.22);
+  z-index: 2100;
+}
+body.menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  #hamburger-menu {
+    width: 90vw;
+    min-width: 160px;
+    border-left-width: 4px;
+    right: -100vw;
+  }
+  #hamburger-menu.open {
+    right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;     /* スマホ用にさらに小さく */
+    padding-top: 15px;
+    padding-right: 6px;
+    padding-bottom: 0;
+    padding-left: 0;      /* 左右の余白も小さく */
+    line-height: 1.3;    /* 高さ圧縮 */
+  }
+  h2 {
+    font-size: 15px;     /* 見出しも調整 */
+    padding: 0 6px;
+    line-height: 1.3;
+  }
+  .roundBox {
+    max-width: 98vw;
+    padding: 10px 2vw;
+  }
+  #hamburger-menu label {
+    font-size: 13px;
+    padding: 10px 8px;
+    white-space: nowrap; /* ← これを追加で改行防止 */
+  }
 }

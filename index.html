@@ -9,6 +9,7 @@
 </head>
 
 <body>
+  <!-- ハンバーガーメニュー＋スライドメニュー -->
   <header>
     <button id="hamburger-btn" aria-label="メニュー開閉">☰</button>
     <nav id="hamburger-menu" class="hidden">
@@ -18,7 +19,7 @@
         <li><button id="lang-ru">Русский</button></li>
         <li><button id="toggle-theme-btn">ダークモード切替</button></li>
         <li>
-          <label style="cursor: pointer;">
+          <label style="width:100%;cursor:pointer;padding:0 18px;">
             <input type="checkbox" id="show-correct-toggle" style="margin-right: 5px;">
             正解を常に表示する（学習モード）
           </label>
@@ -26,17 +27,21 @@
       </ul>
     </nav>
   </header>
-  <main class="container">
+
+
+  <main class="content">
     <h1>ITパスポート試験 問題集</h1>
     <div id="breadcrumb" class="breadcrumb"></div>
-    <section id="category-section">
+
+    <!-- カテゴリ選択エリア -->
+    <section id="category-section" class="roundBox">
       <h2>カテゴリーを選択してください</h2>
-      <div class="category-buttons">
-        <button id="btn-strategy" class="category-btn" type="button">ストラテジ</button>
+      <div class="category-buttons selectBtn">
+        <button id="btn-strategy">ストラテジ</button>
         <button id="btn-management">マネジメント</button>
         <button id="btn-technology">テクノロジ</button>
       </div>
-      <div id="strategy-subcategories" class="subcategory-buttons hidden">
+      <div id="strategy-subcategories" class="subcategory-buttons hidden selectBtn">
         <button onclick="loadQuestions(1)">1. 企業活動</button>
         <button onclick="loadQuestions(2)">2. 法務</button>
         <button onclick="loadQuestions(3)">3. 経営戦略マネジメント</button>
@@ -45,14 +50,14 @@
         <button onclick="loadQuestions(6)">6. システム戦略</button>
         <button onclick="loadQuestions(7)">7. システム企画</button>
       </div>
-      <div id="management-subcategories" class="subcategory-buttons hidden">
+      <div id="management-subcategories" class="subcategory-buttons hidden selectBtn">
         <button onclick="loadManagementQuestions(8)">8. システム開発技術</button>
         <button onclick="loadManagementQuestions(9)">9. ソフトウェア開発管理技術</button>
         <button onclick="loadManagementQuestions(10)">10. プロジェクトマネジメント</button>
         <button onclick="loadManagementQuestions(11)">11. サービスマネジメント</button>
         <button onclick="loadManagementQuestions(12)">12. システム監査</button>
       </div>
-      <div id="technology-subcategories" class="subcategory-buttons hidden">
+      <div id="technology-subcategories" class="subcategory-buttons hidden selectBtn">
         <button onclick="loadTechnologyQuestions(13)">13. 基礎理論</button>
         <button onclick="loadTechnologyQuestions(14)">14. アルゴリズムとプログラミング</button>
         <button onclick="loadTechnologyQuestions(15)">15. コンピュータ構成要素</button>
@@ -66,11 +71,13 @@
         <button onclick="loadTechnologyQuestions(23)">23. セキュリティ</button>
       </div>
     </section>
-    <section id="quiz-section" class="hidden">
+
+    <!-- 問題出題エリア -->
+    <section id="quiz-section" class="hidden roundBox">
       <h2 id="quiz-category-title"></h2>
       <div id="question-title" style="font-weight:bold; font-size:1.2em; margin-bottom:10px;"></div>
       <div id="question-area"></div>
-      <div id="choices-area"></div>
+      <div id="choices-area" class="selectBtn"></div>
       <div id="result" style="margin-top:15px; font-weight:bold;"></div>
       <div id="navigation-wrapper">
         <div id="navigation-buttons">
@@ -81,6 +88,7 @@
       </div>
     </section>
   </main>
+
   <script type="module" src="./js/script.js"></script>
 </body>
 

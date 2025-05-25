@@ -23,18 +23,53 @@ import { q22_network } from './q22_network.js';
 import { q23_security } from './q23_security.js';
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btn-strategy").addEventListener("click", () => {
-    document.getElementById("strategy-subcategories").classList.toggle("hidden");
+    const el = document.getElementById("strategy-subcategories");
+    const isOpen = !el.classList.contains("hidden");
+    hideAllSubcategories();
+    if (!isOpen) el.classList.remove("hidden");
   });
   document.getElementById("btn-management").addEventListener("click", () => {
-    document.getElementById("management-subcategories").classList.toggle("hidden");
+    const el = document.getElementById("management-subcategories");
+    const isOpen = !el.classList.contains("hidden");
+    hideAllSubcategories();
+    if (!isOpen) el.classList.remove("hidden");
   });
   document.getElementById("btn-technology").addEventListener("click", () => {
-    document.getElementById("technology-subcategories").classList.toggle("hidden");
+    const el = document.getElementById("technology-subcategories");
+    const isOpen = !el.classList.contains("hidden");
+    hideAllSubcategories();
+    if (!isOpen) el.classList.remove("hidden");
   });
+  function hideAllSubcategories() {
+    document.getElementById("strategy-subcategories").classList.add("hidden");
+    document.getElementById("management-subcategories").classList.add("hidden");
+    document.getElementById("technology-subcategories").classList.add("hidden");
+  }
   const hamburgerBtn = document.getElementById("hamburger-btn");
   const hamburgerMenu = document.getElementById("hamburger-menu");
-  hamburgerBtn.addEventListener("click", () => {
-    hamburgerMenu.classList.toggle("hidden");
+  hamburgerBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    hamburgerMenu.classList.toggle("open");
+    hamburgerMenu.classList.remove("hidden");
+    document.body.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      document.body.classList.contains("menu-open") &&
+      !hamburgerMenu.contains(e.target) &&
+      !hamburgerBtn.contains(e.target)
+    ) {
+      hamburgerMenu.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
+      hamburgerMenu.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
   });
   const themeToggleBtn = document.getElementById("toggle-theme-btn");
   themeToggleBtn.addEventListener("click", () => {
@@ -109,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const previousQuestionBtn = document.getElementById("previous-question-btn");
   const showCorrectToggle = document.getElementById("show-correct-toggle");
   function loadQuestions(id) {
+    hideAllSubcategories();
     const strategyMap = {
       1: { title: "企業活動", data: q1_enterprise },
       2: { title: "法務", data: q2_law },
@@ -137,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.loadQuestions = loadQuestions;
   window.loadManagementQuestions = loadManagementQuestions;
   function loadManagementQuestions(id) {
+    hideAllSubcategories();
     const managementMap = {
       8: { title: "システム開発技術", data: q8_system_dev },
       9: { title: "ソフトウェア開発管理技術", data: q9_software_dev },
@@ -161,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resultArea.textContent = "";
   }
   function loadTechnologyQuestions(id) {
+    hideAllSubcategories();
     const technologyMap = {
       13: { title: "基礎理論", data: q13_basic_theory },
       14: { title: "アルゴリズムとプログラミング", data: q14_algorithm },
@@ -233,6 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
   backToCategoryBtn.addEventListener("click", () => {
     quizSection.classList.add("hidden");
     categorySection.classList.remove("hidden");
+    hideAllSubcategories();
     nextQuestionBtn.disabled = false;
     resultArea.textContent = "";
   });

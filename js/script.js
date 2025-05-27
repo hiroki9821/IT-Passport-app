@@ -22,6 +22,15 @@ import { q21_database } from './q21_database.js';
 import { q22_network } from './q22_network.js';
 import { q23_security } from './q23_security.js';
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 追加ここから：初期テーマの設定（デフォルトはダークモード）
+  const savedTheme = localStorage.getItem("theme");
+  const isDark = savedTheme === null || savedTheme === "dark";
+  if (isDark) {
+    document.body.classList.add("dark");
+  }
+  // ✅ 追加ここまで
+
+
   document.getElementById("btn-strategy").addEventListener("click", () => {
     const el = document.getElementById("strategy-subcategories");
     const isOpen = !el.classList.contains("hidden");
@@ -73,7 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   const themeToggleBtn = document.getElementById("toggle-theme-btn");
   themeToggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
+    const nowDark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", nowDark ? "dark" : "light");
+    updateThemeButtonLabel();
   });
   const langButtons = {
     ja: document.getElementById("lang-ja"),
@@ -90,7 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
       next: "次の問題 >>",
       previous: "<< 前の問題",
       back: "カテゴリーに戻る",
-      darkMode: "ダークモード切替",
+      toggleToLight: "ホワイトモード切替",
+      toggleToDark: "ダークモード切替",
       quizTitleSuffix: "問題",
       correct: "正解！",
       incorrect: "不正解。",
@@ -106,7 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
       next: "Next Question >>",
       previous: "<< Previous Question",
       back: "Back to Categories",
-      darkMode: "Toggle Dark Mode",
+      toggleToLight: "Switch to Light Mode",
+      toggleToDark: "Switch to Dark Mode",
       quizTitleSuffix: "Questions",
       correct: "Correct!",
       incorrect: "Incorrect.",
@@ -122,7 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
       next: "Следующий вопрос >>",
       previous: "<< Предыдущий вопрос",
       back: "Назад к категориям",
-      darkMode: "Переключить темную тему",
+      toggleToLight: "Переключить на светлый режим",
+      toggleToDark: "Переключить на тёмный режим",
       quizTitleSuffix: "Вопросы",
       correct: "Правильно!",
       incorrect: "Неправильно.",
@@ -143,6 +157,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const backToCategoryBtn = document.getElementById("back-to-category-btn");
   const previousQuestionBtn = document.getElementById("previous-question-btn");
   const showCorrectToggle = document.getElementById("show-correct-toggle");
+  showCorrectToggle.addEventListener("change", () => {
+    showQuestion();
+  });
   function loadQuestions(id) {
     hideAllSubcategories();
     const strategyMap = {
@@ -167,8 +184,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("strategy");
     showBreadcrumb("ストラテジ", selected.title);
     showQuestion();
+    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
-    resultArea.textContent = "";
+    resultArea.innerHTML = "";
   }
   window.loadQuestions = loadQuestions;
   window.loadManagementQuestions = loadManagementQuestions;
@@ -194,8 +212,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("management");
     showBreadcrumb("マネジメント", selected.title);
     showQuestion();
+    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
-    resultArea.textContent = "";
+    resultArea.innerHTML = "";
   }
   function loadTechnologyQuestions(id) {
     hideAllSubcategories();
@@ -226,10 +245,22 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("technology");
     showBreadcrumb("テクノロジ", selected.title);
     showQuestion();
+    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
-    resultArea.textContent = "";
+    resultArea.innerHTML = "";
   }
   window.loadTechnologyQuestions = loadTechnologyQuestions;
+
+  function updateThemeButtonLabel() {
+    const t = translations[currentLang];
+    if (document.body.classList.contains("dark")) {
+      themeToggleBtn.textContent = t.toggleToLight;
+    } else {
+      themeToggleBtn.textContent = t.toggleToDark;
+    }
+  }
+
+
   function updateLanguage(lang) {
     currentLang = lang;
     const t = translations[lang];
@@ -241,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.textContent = t.next;
     backToCategoryBtn.textContent = t.back;
     previousQuestionBtn.textContent = t.previous;
-    themeToggleBtn.textContent = t.darkMode;
+    updateThemeButtonLabel();
   }
   function updateQuizTitle(category) {
     const t = translations[currentLang];
@@ -252,6 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.keys(langButtons).forEach((lang) => {
     langButtons[lang].addEventListener("click", () => updateLanguage(lang));
   });
+
+  updateThemeButtonLabel();
+
   nextQuestionBtn.addEventListener("click", () => {
     currentQuestionIndex++;
     if (currentQuestionIndex < currentQuestions.length) {
@@ -273,47 +307,58 @@ document.addEventListener("DOMContentLoaded", () => {
     categorySection.classList.remove("hidden");
     hideAllSubcategories();
     nextQuestionBtn.disabled = false;
-    resultArea.textContent = "";
+    resultArea.innerHTML = "";
   });
+
+
   function showQuestion() {
     const q = currentQuestions[currentQuestionIndex];
     const t = translations[currentLang];
-    const prefix = `${t.questionPrefix}${currentQuestionIndex + 1}`;
-    questionArea.textContent = `${prefix}：${q.question}`;
+    const prefix = `${t.questionPrefix}${currentQuestionIndex + 1}. `;
+
+    questionArea.innerHTML = `<p class="underline-multiline">${prefix}${q.question}</p>`;
     choicesArea.innerHTML = "";
-    resultArea.textContent = "";
+    resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
+
+    // 学習モードONで先に解説を表示
+    if (showCorrectToggle.checked && q.explanation) {
+      resultArea.innerHTML = `<div style="margin-top:10px;color:green;">${q.explanation}</div>`;
+    }
+
+    // ボタン生成
     const shuffledChoices = [...q.choices].sort(() => Math.random() - 0.5);
     shuffledChoices.forEach((choice) => {
       const btn = document.createElement("button");
       btn.textContent = choice;
-      btn.onclick = () => {
-        const correct = q.answer === choice;
-        resultArea.textContent = correct ? t.correct : t.incorrect;
-        if (correct && q.explanation) {
-          const explanation = document.createElement("div");
-          explanation.style.marginTop = "10px";
-          explanation.style.color = "green";
-          explanation.textContent = q.explanation;
-          resultArea.appendChild(explanation);
-        }
-        if (correct) {
-          Array.from(choicesArea.children).forEach(b => b.disabled = true);
-        }
-      };
-      choicesArea.appendChild(btn);
+
       if (showCorrectToggle.checked && q.answer === choice) {
         btn.textContent += "　✔";
         btn.style.border = "2px solid green";
         btn.style.fontWeight = "bold";
-        const explanation = document.createElement("div");
-        explanation.style.marginTop = "10px";
-        explanation.style.color = "green";
-        explanation.textContent = q.explanation;
-        resultArea.appendChild(explanation);
       }
+
+      btn.onclick = () => {
+        resultArea.innerHTML = q.answer === choice
+          ? t.correct + (q.explanation ? `<div style="margin-top:10px;color:green;">${q.explanation}</div>` : "")
+          : t.incorrect;
+        if (q.answer === choice) {
+          Array.from(choicesArea.children).forEach(b => b.disabled = true);
+        }
+      };
+      choicesArea.appendChild(btn);
     });
+
     previousQuestionBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
   }
+
+  // 必ず学習モード切替時は再描画
+  showCorrectToggle.addEventListener("change", () => {
+    showQuestion();
+  });
+
+
+
+
   function showBreadcrumb(categoryLabel, subcategoryLabel) {
     const breadcrumbEl = document.getElementById("breadcrumb");
     breadcrumbEl.innerHTML = `

@@ -59,9 +59,11 @@ body.dark {
 body.dark .breadcrumb {
   color: #e0e0e0;
 }
+
 body.dark .breadcrumb span {
   color: #66aaff;
 }
+
 body.dark .breadcrumb .divider {
   color: #888;
 }
@@ -78,7 +80,8 @@ body.dark #hamburger-btn {
 
 body.dark #hamburger-btn:hover,
 body.dark #hamburger-btn:focus {
-  background: #355497;   /* ダーク時はそのまま濃い色 */
+  background: #355497;
+  /* ダーク時はそのまま濃い色 */
   color: #fff;
 }
 
@@ -306,6 +309,7 @@ h2 {
   border-radius: 0;
   transition: background .15s;
 }
+
 #hamburger-btn:hover,
 #hamburger-btn:focus {
   background: none;
@@ -316,7 +320,8 @@ h2 {
 #hamburger-menu {
   position: fixed;
   top: 0;
-  right: -260px; /* 初期は画面外 */
+  right: -260px;
+  /* 初期は画面外 */
   width: 240px;
   height: 100%;
   background: #222;
@@ -329,17 +334,21 @@ h2 {
   padding: 0;
   overflow-y: auto;
 }
+
 #hamburger-menu.open {
   right: 0;
 }
+
 #hamburger-menu ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
+
 #hamburger-menu li {
   border-bottom: 1.5px solid #444;
 }
+
 #hamburger-menu button,
 #hamburger-menu label {
   background: none;
@@ -354,6 +363,7 @@ h2 {
   transition: background .13s;
   font-weight: bold;
 }
+
 #hamburger-menu button:hover,
 #hamburger-menu label:hover {
   background: #355497;
@@ -365,10 +375,14 @@ h2 {
   content: '';
   display: block;
   position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.22);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.22);
   z-index: 2100;
 }
+
 body.menu-open {
   overflow: hidden;
 }
@@ -380,6 +394,7 @@ body.menu-open {
     border-left-width: 4px;
     right: -100vw;
   }
+
   #hamburger-menu.open {
     right: 0;
   }
@@ -387,25 +402,81 @@ body.menu-open {
 
 @media (max-width: 480px) {
   h1 {
-    font-size: 20px;     /* スマホ用にさらに小さく */
+    font-size: 20px;
+    /* スマホ用にさらに小さく */
     padding-top: 15px;
     padding-right: 6px;
     padding-bottom: 0;
-    padding-left: 0;      /* 左右の余白も小さく */
-    line-height: 1.3;    /* 高さ圧縮 */
+    padding-left: 0;
+    /* 左右の余白も小さく */
+    line-height: 1.3;
+    /* 高さ圧縮 */
   }
+
   h2 {
-    font-size: 15px;     /* 見出しも調整 */
+    font-size: 15px;
+    /* 見出しも調整 */
     padding: 0 6px;
     line-height: 1.3;
   }
+
   .roundBox {
     max-width: 98vw;
     padding: 10px 2vw;
   }
+
   #hamburger-menu label {
     font-size: 13px;
     padding: 10px 8px;
-    white-space: nowrap; /* ← これを追加で改行防止 */
+    white-space: nowrap;
+    /* ← これを追加で改行防止 */
   }
+}
+
+.underline-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.question-text {
+  font-size: 1.1em;
+  font-weight: bold;
+  padding-bottom: 6px;
+  margin: 0;
+}
+
+
+@keyframes underlineGrow {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.underline-multiline {
+  font-size: 1.1em;
+  font-weight: bold;
+  line-height: 1.6;
+  display: inline;
+  background: linear-gradient(to right, var(--brand-bg) 100%, transparent 0) no-repeat;
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  animation: underlineGrow 2s ease-out forwards;
+}
+
+@keyframes underlineGrow {
+  from {
+    background-size: 0% 2px;
+  }
+  to {
+    background-size: 100% 2px;
+  }
+}
+
+body.dark .underline-multiline {
+  background-image: linear-gradient(to right, var(--brand-light-bg) 100%, transparent 0);
 }

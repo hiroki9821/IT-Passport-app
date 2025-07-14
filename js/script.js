@@ -21,23 +21,27 @@ import { q20_info_media } from './q20_info_media.js';
 import { q21_database } from './q21_database.js';
 import { q22_network } from './q22_network.js';
 import { q23_security } from './q23_security.js';
+
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 追加ここから：初期テーマの設定（デフォルトはダークモード）
+  // 初期テーマ設定（デフォルトはダークモード）
   const savedTheme = localStorage.getItem("theme");
   const isDark = savedTheme === null || savedTheme === "dark";
   if (isDark) {
     document.body.classList.add("dark");
   }
-  // ✅ 追加ここまで
 
-  // ===== 変更行31: シャッフル関数を追加 =====
-  /**
-   * 配列をランダムに並び替える(シャッフル)ユーティリティ
-   */
+  // ───────────── シャッフル関数を追加 (変更行32) ─────────────
+  /** 配列をランダムに並び替える */
   function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   }
 
+  // サイドメニュー制御
   document.getElementById("btn-strategy").addEventListener("click", () => {
     const el = document.getElementById("strategy-subcategories");
     const isOpen = !el.classList.contains("hidden");
@@ -61,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("management-subcategories").classList.add("hidden");
     document.getElementById("technology-subcategories").classList.add("hidden");
   }
+
+  // ハンバーガーメニュー
   const hamburgerBtn = document.getElementById("hamburger-btn");
   const hamburgerMenu = document.getElementById("hamburger-menu");
   hamburgerBtn.addEventListener("click", (e) => {
@@ -69,27 +75,63 @@ document.addEventListener("DOMContentLoaded", () => {
     hamburgerMenu.classList.remove("hidden");
     document.body.classList.toggle("menu-open");
   });
+  document.addEventListener("click", (e) => {
+    if (
+      document.body.classList.contains("menu-open") &&
+      !hamburgerMenu.contains(e.target) &&
+      !hamburgerBtn.contains(e.target)
+    ) {
+      hamburgerMenu.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
+      hamburgerMenu.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
+  });
 
-  // ...（省略：ハンバーガーやテーマ切替等の既存コード）...
+  // テーマ切替
+  const themeToggleBtn = document.getElementById("toggle-theme-btn");
+  themeToggleBtn.addEventListener("click", () => {
+    const nowDark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", nowDark ? "dark" : "light");
+    updateThemeButtonLabel();
+  });
 
+  // 言語切替
+  const langButtons = {
+    ja: document.getElementById("lang-ja"),
+    en: document.getElementById("lang-en"),
+    ru: document.getElementById("lang-ru")
+  };
+  const translations = { /* 省略: 翻訳オブジェクト */ };
+  let currentLang = "ja";
+
+  // DOM要素取得
+  let currentCategory = null;
+  let currentQuestionIndex = 0;
+  let currentQuestions = [];
+  const categorySection = document.getElementById("category-section");
+  const quizSection = document.getElementById("quiz-section");
+  const questionArea = document.getElementById("question-area");
+  const choicesArea = document.getElementById("choices-area");
+  const resultArea = document.getElementById("result");
+  const nextQuestionBtn = document.getElementById("next-question-btn");
+  const backToCategoryBtn = document.getElementById("back-to-category-btn");
+  const previousQuestionBtn = document.getElementById("previous-question-btn");
+  const showCorrectToggle = document.getElementById("show-correct-toggle");
+
+  showCorrectToggle.addEventListener("change", showQuestion);
+
+  // ===== loadQuestions: ランダム化 (変更行112) =====
   function loadQuestions(id) {
     hideAllSubcategories();
-    const strategyMap = {
-      1: { title: "企業活動", data: q1_enterprise },
-      2: { title: "法務", data: q2_law },
-      3: { title: "経営戦略マネジメント", data: q3_business_strategy },
-      4: { title: "技術戦略マネジメント", data: q4_tech_strategy },
-      5: { title: "ビジネスインダストリ", data: q5_industry },
-      6: { title: "システム戦略", data: q6_system_strategy },
-      7: { title: "システム企画", data: q7_system_planning }
-    };
+    const strategyMap = { /* 省略 */ };
     const selected = strategyMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    // ===== 変更行109: ここをシャッフルに変更 =====
-    currentQuestions = shuffleArray([...selected.data]);
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "strategy";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -97,27 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("strategy");
     showBreadcrumb("ストラテジ", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
+  window.loadQuestions = loadQuestions;
 
-  // ===== 変更行146: loadManagementQuestions も同様にシャッフル =====
+  // ===== loadManagementQuestions: ランダム化 (変更行148) =====
   function loadManagementQuestions(id) {
     hideAllSubcategories();
-    const managementMap = {
-      8: { title: "システム開発技術", data: q8_system_dev },
-      9: { title: "ソフトウェア開発管理技術", data: q9_software_dev },
-      10: { title: "プロジェクトマネジメント", data: q10_project_mgmt },
-      11: { title: "サービスマネジメント", data: q11_service_mgmt },
-      12: { title: "システム監査", data: q12_audit }
-    };
+    const managementMap = { /* 省略 */ };
     const selected = managementMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    currentQuestions = shuffleArray([...selected.data]);
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "management";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -125,34 +158,18 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("management");
     showBreadcrumb("マネジメント", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
+  window.loadManagementQuestions = loadManagementQuestions;
 
-  // ===== 変更行185: loadTechnologyQuestions も同様にシャッフル =====
+  // ===== loadTechnologyQuestions: ランダム化 (変更行188) =====
   function loadTechnologyQuestions(id) {
     hideAllSubcategories();
-    const technologyMap = {
-      13: { title: "基礎理論", data: q13_basic_theory },
-      14: { title: "アルゴリズムとプログラミング", data: q14_algorithm },
-      15: { title: "コンピュータ構成要素", data: q15_computer_components },
-      16: { title: "システム構成要素", data: q16_system_components },
-      17: { title: "ソフトウェア", data: q17_software },
-      18: { title: "ハードウェア", data: q18_hardware },
-      19: { title: "情報デザイン", data: q19_info_design },
-      20: { title: "情報メディア", data: q20_info_media },
-      21: { title: "データベース", data: q21_database },
-      22: { title: "ネットワーク", data: q22_network },
-      23: { title: "セキュリティ", data: q23_security }
-    };
-
+    const technologyMap = { /* 省略 */ };
     const selected = technologyMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    currentQuestions = shuffleArray([...selected.data]);
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "technology";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -160,10 +177,128 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("technology");
     showBreadcrumb("テクノロジ", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
+  window.loadTechnologyQuestions = loadTechnologyQuestions;
 
-  // ...（以下既存コード続く）...
+  function updateThemeButtonLabel() {
+    const t = translations[currentLang];
+    if (document.body.classList.contains("dark")) {
+      themeToggleBtn.textContent = t.toggleToLight;
+    } else {
+      themeToggleBtn.textContent = t.toggleToDark;
+    }
+  }
+
+
+  function updateLanguage(lang) {
+    currentLang = lang;
+    const t = translations[lang];
+    document.querySelector("h1").textContent = t.title;
+    document.querySelector("#category-section h2").textContent = t.categoryPrompt;
+    document.getElementById("btn-strategy").textContent = t.strategy;
+    document.getElementById("btn-management").textContent = t.management;
+    document.getElementById("btn-technology").textContent = t.technology;
+    nextQuestionBtn.textContent = t.next;
+    backToCategoryBtn.textContent = t.back;
+    previousQuestionBtn.textContent = t.previous;
+    updateThemeButtonLabel();
+  }
+  function updateQuizTitle(category) {
+    const t = translations[currentLang];
+    const title = t[category];
+    const suffix = t.quizTitleSuffix;
+    document.getElementById("quiz-category-title").textContent = `${title} ${suffix}`;
+  }
+  Object.keys(langButtons).forEach((lang) => {
+    langButtons[lang].addEventListener("click", () => updateLanguage(lang));
+  });
+
+  updateThemeButtonLabel();
+
+  nextQuestionBtn.addEventListener("click", () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < currentQuestions.length) {
+      showQuestion();
+    } else {
+      resultArea.textContent = translations[currentLang].finished;
+      nextQuestionBtn.disabled = true;
+    }
+  });
+  previousQuestionBtn.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      showQuestion();
+      nextQuestionBtn.disabled = false;
+    }
+  });
+  backToCategoryBtn.addEventListener("click", () => {
+    quizSection.classList.add("hidden");
+    categorySection.classList.remove("hidden");
+    hideAllSubcategories();
+    nextQuestionBtn.disabled = false;
+    resultArea.innerHTML = "";
+  });
+
+
+  function showQuestion() {
+    const q = currentQuestions[currentQuestionIndex];
+    const t = translations[currentLang];
+    const prefix = `${t.questionPrefix}${currentQuestionIndex + 1}. `;
+
+    questionArea.innerHTML = `<p class="underline-multiline">${prefix}${q.question}</p>`;
+    choicesArea.innerHTML = "";
+    resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
+
+    // 学習モードONで先に解説を表示
+    if (showCorrectToggle.checked && q.explanation) {
+      resultArea.innerHTML = `<div style="margin-top:10px;color:green;">${q.explanation}</div>`;
+    }
+
+    // ボタン生成
+    const shuffledChoices = [...q.choices].sort(() => Math.random() - 0.5);
+    shuffledChoices.forEach((choice) => {
+      const btn = document.createElement("button");
+      btn.textContent = choice;
+
+      if (showCorrectToggle.checked && q.answer === choice) {
+        btn.textContent += "　✔";
+        btn.style.border = "2px solid green";
+        btn.style.fontWeight = "bold";
+      }
+
+      btn.onclick = () => {
+        resultArea.innerHTML = q.answer === choice
+          ? t.correct + (q.explanation ? `<div style="margin-top:10px;color:green;">${q.explanation}</div>` : "")
+          : t.incorrect;
+        if (q.answer === choice) {
+          Array.from(choicesArea.children).forEach(b => b.disabled = true);
+        }
+      };
+      choicesArea.appendChild(btn);
+    });
+
+    previousQuestionBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+  }
+
+  // 必ず学習モード切替時は再描画
+  showCorrectToggle.addEventListener("change", () => {
+    showQuestion();
+  });
+
+
+
+
+  function showBreadcrumb(categoryLabel, subcategoryLabel) {
+    const breadcrumbEl = document.getElementById("breadcrumb");
+    breadcrumbEl.innerHTML = `
+      <span>ホーム</span>
+      <span class="divider">></span>
+      <span>${categoryLabel}</span>
+      <span class="divider">></span>
+      <span>${subcategoryLabel}</span>
+    `;
+  }
+  updateLanguage("ja");
 });

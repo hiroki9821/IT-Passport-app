@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const t = translations[currentLang];
     const title = t[category];
     const suffix = t.quizTitleSuffix;
-    document.getElementById("quiz-category-title").textContent = ${title} ${suffix};
+    document.getElementById("quiz-category-title").textContent = `${title} ${suffix}`;
   }
   Object.keys(langButtons).forEach((lang) => {
     langButtons[lang].addEventListener("click", () => updateLanguage(lang));
@@ -314,15 +314,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function showQuestion() {
     const q = currentQuestions[currentQuestionIndex];
     const t = translations[currentLang];
-    const prefix = ${t.questionPrefix}${currentQuestionIndex + 1}. ;
+    const prefix = `${t.questionPrefix}${currentQuestionIndex + 1}. `;
 
-    questionArea.innerHTML = <p class="underline-multiline">${prefix}${q.question}</p>;
+    questionArea.innerHTML = `<p class="underline-multiline">${prefix}${q.question}</p>`;
     choicesArea.innerHTML = "";
     resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
 
     // 学習モードONで先に解説を表示
     if (showCorrectToggle.checked && q.explanation) {
-      resultArea.innerHTML = <div style="margin-top:10px;color:green;">${q.explanation}</div>;
+      resultArea.innerHTML = `<div style="margin-top:10px;color:green;">${q.explanation}</div>`;
     }
 
     // ボタン生成
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       btn.onclick = () => {
         resultArea.innerHTML = q.answer === choice
-          ? t.correct + (q.explanation ? <div style="margin-top:10px;color:green;">${q.explanation}</div> : "")
+          ? t.correct + (q.explanation ? `<div style="margin-top:10px;color:green;">${q.explanation}</div>` : "")
           : t.incorrect;
         if (q.answer === choice) {
           Array.from(choicesArea.children).forEach(b => b.disabled = true);
@@ -361,13 +361,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showBreadcrumb(categoryLabel, subcategoryLabel) {
     const breadcrumbEl = document.getElementById("breadcrumb");
-    breadcrumbEl.innerHTML = 
+    breadcrumbEl.innerHTML = `
       <span>ホーム</span>
       <span class="divider">></span>
       <span>${categoryLabel}</span>
       <span class="divider">></span>
       <span>${subcategoryLabel}</span>
-    ;
+    `;
   }
   updateLanguage("ja");
 });

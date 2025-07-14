@@ -30,6 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // ✅ 追加ここまで
 
+  // ===== 変更行31: シャッフル関数を追加 =====
+  /**
+   * 配列をランダムに並び替える(シャッフル)ユーティリティ
+   */
+  function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
 
   document.getElementById("btn-strategy").addEventListener("click", () => {
     const el = document.getElementById("strategy-subcategories");
@@ -63,103 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.toggle("menu-open");
   });
 
-  document.addEventListener("click", (e) => {
-    if (
-      document.body.classList.contains("menu-open") &&
-      !hamburgerMenu.contains(e.target) &&
-      !hamburgerBtn.contains(e.target)
-    ) {
-      hamburgerMenu.classList.remove("open");
-      document.body.classList.remove("menu-open");
-    }
-  });
+  // ...（省略：ハンバーガーやテーマ切替等の既存コード）...
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
-      hamburgerMenu.classList.remove("open");
-      document.body.classList.remove("menu-open");
-    }
-  });
-  const themeToggleBtn = document.getElementById("toggle-theme-btn");
-  themeToggleBtn.addEventListener("click", () => {
-    const nowDark = document.body.classList.toggle("dark");
-    localStorage.setItem("theme", nowDark ? "dark" : "light");
-    updateThemeButtonLabel();
-  });
-  const langButtons = {
-    ja: document.getElementById("lang-ja"),
-    en: document.getElementById("lang-en"),
-    ru: document.getElementById("lang-ru")
-  };
-  const translations = {
-    ja: {
-      title: "ITパスポート試験 問題集",
-      categoryPrompt: "カテゴリーを選択してください",
-      strategy: "ストラテジ",
-      management: "マネジメント",
-      technology: "テクノロジ",
-      next: "次の問題 >>",
-      previous: "<< 前の問題",
-      back: "カテゴリーに戻る",
-      toggleToLight: "ホワイトモード切替",
-      toggleToDark: "ダークモード切替",
-      quizTitleSuffix: "問題",
-      correct: "正解！",
-      incorrect: "不正解。",
-      finished: "全ての問題が終了しました。",
-      questionPrefix: "問"
-    },
-    en: {
-      title: "IT Passport Exam - Quiz",
-      categoryPrompt: "Please select a category",
-      strategy: "Strategy",
-      management: "Management",
-      technology: "Technology",
-      next: "Next Question >>",
-      previous: "<< Previous Question",
-      back: "Back to Categories",
-      toggleToLight: "Switch to Light Mode",
-      toggleToDark: "Switch to Dark Mode",
-      quizTitleSuffix: "Questions",
-      correct: "Correct!",
-      incorrect: "Incorrect.",
-      finished: "All questions completed.",
-      questionPrefix: "Q"
-    },
-    ru: {
-      title: "Экзамен IT Passport - Викторина",
-      categoryPrompt: "Выберите категорию",
-      strategy: "Стратегия",
-      management: "Управление",
-      technology: "Технологии",
-      next: "Следующий вопрос >>",
-      previous: "<< Предыдущий вопрос",
-      back: "Назад к категориям",
-      toggleToLight: "Переключить на светлый режим",
-      toggleToDark: "Переключить на тёмный режим",
-      quizTitleSuffix: "Вопросы",
-      correct: "Правильно!",
-      incorrect: "Неправильно.",
-      finished: "Все вопросы завершены.",
-      questionPrefix: "Вопрос"
-    }
-  };
-  let currentLang = "ja";
-  let currentCategory = null;
-  let currentQuestionIndex = 0;
-  let currentQuestions = [];
-  const categorySection = document.getElementById("category-section");
-  const quizSection = document.getElementById("quiz-section");
-  const questionArea = document.getElementById("question-area");
-  const choicesArea = document.getElementById("choices-area");
-  const resultArea = document.getElementById("result");
-  const nextQuestionBtn = document.getElementById("next-question-btn");
-  const backToCategoryBtn = document.getElementById("back-to-category-btn");
-  const previousQuestionBtn = document.getElementById("previous-question-btn");
-  const showCorrectToggle = document.getElementById("show-correct-toggle");
-  showCorrectToggle.addEventListener("change", () => {
-    showQuestion();
-  });
   function loadQuestions(id) {
     hideAllSubcategories();
     const strategyMap = {
@@ -176,7 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("指定された問題が見つかりません。");
       return;
     }
-    currentQuestions = selected.data;
+    // ===== 変更行109: ここをシャッフルに変更 =====
+    currentQuestions = shuffleArray([...selected.data]);
     currentCategory = "strategy";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -188,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
-  window.loadQuestions = loadQuestions;
-  window.loadManagementQuestions = loadManagementQuestions;
+
+  // ===== 変更行146: loadManagementQuestions も同様にシャッフル =====
   function loadManagementQuestions(id) {
     hideAllSubcategories();
     const managementMap = {
@@ -204,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("指定された問題が見つかりません。");
       return;
     }
-    currentQuestions = selected.data;
+    currentQuestions = shuffleArray([...selected.data]);
     currentCategory = "management";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -216,6 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
+
+  // ===== 変更行185: loadTechnologyQuestions も同様にシャッフル =====
   function loadTechnologyQuestions(id) {
     hideAllSubcategories();
     const technologyMap = {
@@ -237,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("指定された問題が見つかりません。");
       return;
     }
-    currentQuestions = selected.data;
+    currentQuestions = shuffleArray([...selected.data]);
     currentCategory = "technology";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -249,125 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
-  window.loadTechnologyQuestions = loadTechnologyQuestions;
 
-  function updateThemeButtonLabel() {
-    const t = translations[currentLang];
-    if (document.body.classList.contains("dark")) {
-      themeToggleBtn.textContent = t.toggleToLight;
-    } else {
-      themeToggleBtn.textContent = t.toggleToDark;
-    }
-  }
-
-
-  function updateLanguage(lang) {
-    currentLang = lang;
-    const t = translations[lang];
-    document.querySelector("h1").textContent = t.title;
-    document.querySelector("#category-section h2").textContent = t.categoryPrompt;
-    document.getElementById("btn-strategy").textContent = t.strategy;
-    document.getElementById("btn-management").textContent = t.management;
-    document.getElementById("btn-technology").textContent = t.technology;
-    nextQuestionBtn.textContent = t.next;
-    backToCategoryBtn.textContent = t.back;
-    previousQuestionBtn.textContent = t.previous;
-    updateThemeButtonLabel();
-  }
-  function updateQuizTitle(category) {
-    const t = translations[currentLang];
-    const title = t[category];
-    const suffix = t.quizTitleSuffix;
-    document.getElementById("quiz-category-title").textContent = `${title} ${suffix}`;
-  }
-  Object.keys(langButtons).forEach((lang) => {
-    langButtons[lang].addEventListener("click", () => updateLanguage(lang));
-  });
-
-  updateThemeButtonLabel();
-
-  nextQuestionBtn.addEventListener("click", () => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < currentQuestions.length) {
-      showQuestion();
-    } else {
-      resultArea.textContent = translations[currentLang].finished;
-      nextQuestionBtn.disabled = true;
-    }
-  });
-  previousQuestionBtn.addEventListener("click", () => {
-    if (currentQuestionIndex > 0) {
-      currentQuestionIndex--;
-      showQuestion();
-      nextQuestionBtn.disabled = false;
-    }
-  });
-  backToCategoryBtn.addEventListener("click", () => {
-    quizSection.classList.add("hidden");
-    categorySection.classList.remove("hidden");
-    hideAllSubcategories();
-    nextQuestionBtn.disabled = false;
-    resultArea.innerHTML = "";
-  });
-
-
-  function showQuestion() {
-    const q = currentQuestions[currentQuestionIndex];
-    const t = translations[currentLang];
-    const prefix = `${t.questionPrefix}${currentQuestionIndex + 1}. `;
-
-    questionArea.innerHTML = `<p class="underline-multiline">${prefix}${q.question}</p>`;
-    choicesArea.innerHTML = "";
-    resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
-
-    // 学習モードONで先に解説を表示
-    if (showCorrectToggle.checked && q.explanation) {
-      resultArea.innerHTML = `<div style="margin-top:10px;color:green;">${q.explanation}</div>`;
-    }
-
-    // ボタン生成
-    const shuffledChoices = [...q.choices].sort(() => Math.random() - 0.5);
-    shuffledChoices.forEach((choice) => {
-      const btn = document.createElement("button");
-      btn.textContent = choice;
-
-      if (showCorrectToggle.checked && q.answer === choice) {
-        btn.textContent += "　✔";
-        btn.style.border = "2px solid green";
-        btn.style.fontWeight = "bold";
-      }
-
-      btn.onclick = () => {
-        resultArea.innerHTML = q.answer === choice
-          ? t.correct + (q.explanation ? `<div style="margin-top:10px;color:green;">${q.explanation}</div>` : "")
-          : t.incorrect;
-        if (q.answer === choice) {
-          Array.from(choicesArea.children).forEach(b => b.disabled = true);
-        }
-      };
-      choicesArea.appendChild(btn);
-    });
-
-    previousQuestionBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
-  }
-
-  // 必ず学習モード切替時は再描画
-  showCorrectToggle.addEventListener("change", () => {
-    showQuestion();
-  });
-
-
-
-
-  function showBreadcrumb(categoryLabel, subcategoryLabel) {
-    const breadcrumbEl = document.getElementById("breadcrumb");
-    breadcrumbEl.innerHTML = `
-      <span>ホーム</span>
-      <span class="divider">></span>
-      <span>${categoryLabel}</span>
-      <span class="divider">></span>
-      <span>${subcategoryLabel}</span>
-    `;
-  }
-  updateLanguage("ja");
+  // ...（以下既存コード続く）...
 });

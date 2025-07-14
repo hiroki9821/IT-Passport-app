@@ -22,12 +22,14 @@ import { q21_database } from './q21_database.js';
 import { q22_network } from './q22_network.js';
 import { q23_security } from './q23_security.js';
 document.addEventListener("DOMContentLoaded", () => {
- 
+  // ✅ 追加ここから：初期テーマの設定（デフォルトはダークモード）
   const savedTheme = localStorage.getItem("theme");
   const isDark = savedTheme === null || savedTheme === "dark";
   if (isDark) {
     document.body.classList.add("dark");
   }
+  // ✅ 追加ここまで
+
 
   document.getElementById("btn-strategy").addEventListener("click", () => {
     const el = document.getElementById("strategy-subcategories");
@@ -316,12 +318,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     questionArea.innerHTML = <p class="underline-multiline">${prefix}${q.question}</p>;
     choicesArea.innerHTML = "";
-    resultArea.innerHTML = ""; 
+    resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
 
-        if (showCorrectToggle.checked && q.explanation) {
+    // 学習モードONで先に解説を表示
+    if (showCorrectToggle.checked && q.explanation) {
       resultArea.innerHTML = <div style="margin-top:10px;color:green;">${q.explanation}</div>;
     }
 
+    // ボタン生成
     const shuffledChoices = [...q.choices].sort(() => Math.random() - 0.5);
     shuffledChoices.forEach((choice) => {
       const btn = document.createElement("button");
@@ -347,9 +351,13 @@ document.addEventListener("DOMContentLoaded", () => {
     previousQuestionBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
   }
 
+  // 必ず学習モード切替時は再描画
   showCorrectToggle.addEventListener("change", () => {
     showQuestion();
   });
+
+
+
 
   function showBreadcrumb(categoryLabel, subcategoryLabel) {
     const breadcrumbEl = document.getElementById("breadcrumb");

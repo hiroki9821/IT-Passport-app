@@ -22,15 +22,19 @@ import { q21_database } from './q21_database.js';
 import { q22_network } from './q22_network.js';
 import { q23_security } from './q23_security.js';
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 追加ここから：初期テーマの設定（デフォルトはダークモード）
   const savedTheme = localStorage.getItem("theme");
   const isDark = savedTheme === null || savedTheme === "dark";
   if (isDark) {
     document.body.classList.add("dark");
   }
-  // ✅ 追加ここまで
-
-
+  function shuffleArray(array) {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
   document.getElementById("btn-strategy").addEventListener("click", () => {
     const el = document.getElementById("strategy-subcategories");
     const isOpen = !el.classList.contains("hidden");
@@ -62,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     hamburgerMenu.classList.remove("hidden");
     document.body.classList.toggle("menu-open");
   });
-
   document.addEventListener("click", (e) => {
     if (
       document.body.classList.contains("menu-open") &&
@@ -73,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.remove("menu-open");
     }
   });
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
       hamburgerMenu.classList.remove("open");
@@ -157,9 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const backToCategoryBtn = document.getElementById("back-to-category-btn");
   const previousQuestionBtn = document.getElementById("previous-question-btn");
   const showCorrectToggle = document.getElementById("show-correct-toggle");
-  showCorrectToggle.addEventListener("change", () => {
-    showQuestion();
-  });
+  showCorrectToggle.addEventListener("change", showQuestion);
   function loadQuestions(id) {
     hideAllSubcategories();
     const strategyMap = {
@@ -172,11 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
       7: { title: "システム企画", data: q7_system_planning }
     };
     const selected = strategyMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    currentQuestions = selected.data;
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "strategy";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -184,12 +181,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("strategy");
     showBreadcrumb("ストラテジ", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
   window.loadQuestions = loadQuestions;
-  window.loadManagementQuestions = loadManagementQuestions;
   function loadManagementQuestions(id) {
     hideAllSubcategories();
     const managementMap = {
@@ -200,11 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
       12: { title: "システム監査", data: q12_audit }
     };
     const selected = managementMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    currentQuestions = selected.data;
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "management";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -212,10 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("management");
     showBreadcrumb("マネジメント", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
+  window.loadManagementQuestions = loadManagementQuestions;
   function loadTechnologyQuestions(id) {
     hideAllSubcategories();
     const technologyMap = {
@@ -231,13 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
       22: { title: "ネットワーク", data: q22_network },
       23: { title: "セキュリティ", data: q23_security }
     };
-
     const selected = technologyMap[id];
-    if (!selected || !selected.data) {
-      alert("指定された問題が見つかりません。");
-      return;
-    }
-    currentQuestions = selected.data;
+    if (!selected || !selected.data) return alert("指定された問題が見つかりません。");
+    currentQuestions = shuffleArray(selected.data);
     currentCategory = "technology";
     currentQuestionIndex = 0;
     categorySection.classList.add("hidden");
@@ -245,12 +233,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQuizTitle("technology");
     showBreadcrumb("テクノロジ", selected.title);
     showQuestion();
-    setTimeout(showQuestion, 0);
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   }
   window.loadTechnologyQuestions = loadTechnologyQuestions;
-
   function updateThemeButtonLabel() {
     const t = translations[currentLang];
     if (document.body.classList.contains("dark")) {
@@ -259,8 +245,6 @@ document.addEventListener("DOMContentLoaded", () => {
       themeToggleBtn.textContent = t.toggleToDark;
     }
   }
-
-
   function updateLanguage(lang) {
     currentLang = lang;
     const t = translations[lang];
@@ -283,9 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.keys(langButtons).forEach((lang) => {
     langButtons[lang].addEventListener("click", () => updateLanguage(lang));
   });
-
   updateThemeButtonLabel();
-
   nextQuestionBtn.addEventListener("click", () => {
     currentQuestionIndex++;
     if (currentQuestionIndex < currentQuestions.length) {
@@ -309,8 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.disabled = false;
     resultArea.innerHTML = "";
   });
-
-
   function showQuestion() {
     const q = currentQuestions[currentQuestionIndex];
     const t = translations[currentLang];
@@ -318,14 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     questionArea.innerHTML = `<p class="underline-multiline">${prefix}${q.question}</p>`;
     choicesArea.innerHTML = "";
-    resultArea.innerHTML = ""; // ← すべてinnerHTMLで統一
-
-    // 学習モードONで先に解説を表示
+    resultArea.innerHTML = ""; 
+    
     if (showCorrectToggle.checked && q.explanation) {
       resultArea.innerHTML = `<div style="margin-top:10px;color:green;">${q.explanation}</div>`;
     }
-
-    // ボタン生成
     const shuffledChoices = [...q.choices].sort(() => Math.random() - 0.5);
     shuffledChoices.forEach((choice) => {
       const btn = document.createElement("button");
@@ -336,7 +313,6 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.style.border = "2px solid green";
         btn.style.fontWeight = "bold";
       }
-
       btn.onclick = () => {
         resultArea.innerHTML = q.answer === choice
           ? t.correct + (q.explanation ? `<div style="margin-top:10px;color:green;">${q.explanation}</div>` : "")
@@ -347,18 +323,11 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       choicesArea.appendChild(btn);
     });
-
     previousQuestionBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
   }
-
-  // 必ず学習モード切替時は再描画
   showCorrectToggle.addEventListener("change", () => {
     showQuestion();
   });
-
-
-
-
   function showBreadcrumb(categoryLabel, subcategoryLabel) {
     const breadcrumbEl = document.getElementById("breadcrumb");
     breadcrumbEl.innerHTML = `

@@ -480,3 +480,45 @@ body.menu-open {
 body.dark .underline-multiline {
   background-image: linear-gradient(to right, var(--brand-light-bg) 100%, transparent 0);
 }
+
+#github-login-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  background: var(--brand-light-bg);
+  color: #fff;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#github-login-btn:hover,
+#github-login-btn:focus {
+  background: var(--brand-bg);
+}
+
+/* ユーザー情報表示 */
+#login-user-info {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--body-color);
+  background: var(--main-bg-sub);
+}
+
+/* ダークモード時の調整 */
+body.dark #github-login-btn {
+  background: var(--brand-pale-bg);
+  color: var(--body-color);
+}
+body.dark #github-login-btn:hover,
+body.dark #github-login-btn:focus {
+  background: var(--brand-light-bg);
+}
+body.dark #login-user-info {
+  background: var(--menu-bg);
+  color: var(--body-color);
+}

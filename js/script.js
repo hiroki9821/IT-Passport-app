@@ -28,6 +28,33 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isDark) {
     document.body.classList.add("dark");
   }
+   const githubBtn = document.getElementById('github-login-btn');
+   const userInfo  = document.getElementById('login-user-info');
+
+   githubBtn.addEventListener('click', async () => {
+     console.log('[DEBUG] GitHub ボタンがクリックされました');
+     try {
+       const result = await loginWithGitHub();
+       console.log('[DEBUG] loginWithGitHub 成功:', result);
+       userInfo.textContent = `ようこそ、${result.user.displayName || result.user.email} さん`;
+     } catch (e) {
+      console.error('[DEBUG] loginWithGitHub エラー:', e);
+       alert('GitHubログインに失敗しました。コンソールを確認してください。');
+     }
+   });
+
+   observeAuthState(user => {
+     console.log('[DEBUG] 認証状態変化:', user);
+     if (user) {
+       userInfo.textContent = `ログイン中: ${user.displayName || user.email}`;
+       githubBtn.textContent = 'ログアウト';
+     } else {
+       userInfo.textContent = '未ログイン';
+       githubBtn.textContent = 'GitHub でログイン';
+     }
+   });
+   // ──────────────────────────────────────────
+
   function shuffleArray(array) {
     const copy = [...array];
     for (let i = copy.length - 1; i > 0; i--) {

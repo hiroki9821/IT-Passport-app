@@ -203,9 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
     quizSection.classList.remove("hidden");
     updateQuizTitle("management");
     showBreadcrumb("マネジメント", selected.title);
+    resultArea.innerHTML = "";
     showQuestion();
     nextQuestionBtn.disabled = false;
-    resultArea.innerHTML = "";
   }
   window.loadManagementQuestions = loadManagementQuestions;
   function loadTechnologyQuestions(id) {
@@ -232,9 +232,9 @@ document.addEventListener("DOMContentLoaded", () => {
     quizSection.classList.remove("hidden");
     updateQuizTitle("technology");
     showBreadcrumb("テクノロジ", selected.title);
+    resultArea.innerHTML = "";
     showQuestion();
     nextQuestionBtn.disabled = false;
-    resultArea.innerHTML = "";
   }
   window.loadTechnologyQuestions = loadTechnologyQuestions;
   function updateThemeButtonLabel() {

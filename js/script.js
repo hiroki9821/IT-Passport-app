@@ -1,3 +1,4 @@
+import { loginWithGitHub, observeAuthState, logout } from './firebase-config.js';
 import { q1_enterprise } from './q1_enterprise.js';
 import { q2_law } from './q2_law.js';
 import { q3_business_strategy } from './q3_business_strategy.js';

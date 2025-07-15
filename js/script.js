@@ -180,9 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
     quizSection.classList.remove("hidden");
     updateQuizTitle("strategy");
     showBreadcrumb("ストラテジ", selected.title);
+    resultArea.innerHTML = "";
     showQuestion();
     nextQuestionBtn.disabled = false;
-    resultArea.innerHTML = "";
   }
   window.loadQuestions = loadQuestions;
   function loadManagementQuestions(id) {
